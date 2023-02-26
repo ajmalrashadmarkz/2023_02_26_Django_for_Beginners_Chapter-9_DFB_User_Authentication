@@ -198,4 +198,43 @@ ____________________  9. Templates ____________________
               </form>
             {% endblock content %}
 
-____________________  10. URLs ____________________
+____________________  10. views ____________________
+    - accounts/views.py
+            from django.shortcuts import render
+            from django.http import HttpResponse
+            from django.views.generic import CreateView
+            from django.urls import reverse_lazy
+            from .forms import CustomUserCreationForm
+            # Create your views here.
+            def test(request):
+                return HttpResponse("<h1> OK </h1>")
+
+            class SignUpView(CreateView):
+                form_class = CustomUserCreationForm
+                success_url = reverse_lazy("login")
+                template_name = "registration/signup.html"
+
+____________________  11. urls ____________________
+    - ____________________  11.1 urls ____________________
+        - accounts/urls.py
+                from django.urls import path
+                from . import views
+                urlpatterns = [
+                    path("test/",views.test,name="test"),
+                    path("signup/",views.SignUpView.as_view(),name = "signup"),
+                ]
+
+    -  ____________________  11.2 urls ____________________
+        - django_project/urls.py
+                from django.contrib import admin
+                from django.urls import path,include
+                from django.views.generic import TemplateView
+
+                urlpatterns = [
+                    path("admin/", admin.site.urls),
+                    path("accounts/", include("django.contrib.auth.urls")),
+                    path("accounts/",include("accounts.urls")),
+                    path("",TemplateView.as_view(template_name="home.html"),name ="home"),
+                ]
+
+____________________  12. urls ____________________
