@@ -23,7 +23,7 @@ ____________________ 2. Git SetUp -- Initialisation  ____________________
     - git config user.email "ajmalrashadmarkz@gmail.com"
     - git add .
     - git commit -m "1. Setup Django Basics files"
-    - git remote add origin https://github.com/ajmalrashadmarkz/2023_02_23_Django_for_Beginners_Chapter-8_DFB_Custom-User-Model.git
+    - git remote add origin https://github.com/ajmalrashadmarkz/2023_02_26_Django_for_Beginners_Chapter-9_DFB_User_Authentication.git
     - git push -u origin master
 
 ____________________  3. Create App - accounts ____________________
@@ -121,3 +121,81 @@ ____________________  8. Superuser ____________________
     - python manage.py createsuperuser
 
 
+____________________  9. Templates ____________________
+    - mkdir templates
+    - mkdir templates/registration
+
+    - django_project/settings.py
+        TEMPLATES = [
+        {
+        ...
+        "DIRS": [BASE_DIR / "templates"], # new
+        ...
+        }
+        ]
+
+    - LOGIN_REDIRECT_URL = "home"
+    - LOGOUT_REDIRECT_URL = "home"
+
+    ____________________  9.1 base.html ____________________
+    - templates/base.html
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>{% block title %}Newspaper App{% endblock title %}</title>
+                </head>
+                <body>
+                    <main>
+                        {% block content %}
+                        {% endblock content %}
+                    </main>
+                </body>
+            </html>
+
+    ____________________  9.2 home.html ____________________
+    - templates/home.html
+        {% extends "base.html" %}
+
+        {% block title %}Home{% endblock title %}
+
+        {% block content %}
+            {% if user.is_authenticated %}
+                Hi {{ user.username }}!
+                <p><a href="{% url 'logout' %}">Log Out</a></p>
+            {% else %}
+                <p>You are not logged in</p>
+                <a href="{% url 'login' %}">Log In</a> |
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        {% endblock content %}
+
+    ____________________  9.3 home.html ____________________
+    - templates/registration/login.html
+            {% extends "base.html" %}
+
+            {% block title %}Log In{% endblock title %}
+
+            {% block content %}
+                <h2>Log In</h2>
+                <form method="post">{% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Log In</button>
+                </form>
+            {% endblock content %}
+
+    ____________________  9.4 home.html ____________________
+    - templates/registration/signup.html
+            {% extends "base.html" %}
+
+            {% block title %}Sign Up{% endblock title %}
+
+            {% block content %}
+              <h2>Sign Up</h2>
+              <form method="post">{% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Sign Up</button>
+              </form>
+            {% endblock content %}
+
+____________________  10. URLs ____________________
